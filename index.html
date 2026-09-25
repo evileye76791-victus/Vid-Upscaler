@@ -3,198 +3,394 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PixelVibe AI - In-Browser Media Upscaler</title>
-  <!-- Tailwind CSS via CDN for UI styling -->
+  <title>Vid Upscaler - AI Media & Video Enhancer</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: radial-gradient(circle at 50% -20%, #1e1b4b, #0f172a 60%, #020617);
+      background: radial-gradient(circle at 50% -20%, #1e1b4b, #0f172a 50%, #020617);
+      background-attachment: fixed;
+    }
+
+    /* Heavy Sleek Glassmorphism Effects */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-card {
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .glass-input {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+    }
+
+    .glass-input:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 15px rgba(129, 140, 248, 0.3);
+    }
+
+    /* Glowing Animations */
+    .glow-btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #c084fc 100%);
+      background-size: 200% 200%;
+      transition: all 0.4s ease;
+    }
+
+    .glow-btn:hover {
+      background-position: right center;
+      box-shadow: 0 0 25px rgba(124, 58, 237, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 10px;
     }
   </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+<body class="text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 md:p-8">
 
-  <!-- Header / Hero Section -->
-  <header class="text-center my-6 max-w-xl">
-    <span class="px-4 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 uppercase tracking-wider">
-      100% Client-Side Engine
-    </span>
-    <h1 class="text-4xl font-extrabold mt-4 bg-gradient-to-r from-white via-slate-200 to-indigo-400 bg-clip-text text-transparent">
-      PixelVibe Media Upscaler
+  <!-- Header Section -->
+  <header class="text-center mt-4 mb-8 max-w-2xl w-full">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 uppercase tracking-widest shadow-inner mb-4">
+      <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
+      Next-Gen Media Engine
+    </div>
+    <h1 class="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-white via-indigo-100 to-purple-400 bg-clip-text text-transparent drop-shadow-sm">
+      Vid Upscaler
     </h1>
-    <p class="text-slate-400 text-sm mt-2">Enhance resolution and fine-tune image sharpness directly in your browser without uploading to any server.</p>
+    <p class="text-slate-400 text-sm md:text-base mt-3 max-w-lg mx-auto">
+      Enhance low-res videos & photos directly in your browser. Real-time frame processing, sharpening & resolution scaling.
+    </p>
   </header>
 
-  <!-- Main Processing Card -->
-  <main class="w-full max-w-xl bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl shadow-2xl">
+  <!-- Main Glass Console -->
+  <main class="w-full max-w-3xl glass-panel rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
     
-    <!-- Upload Dropzone -->
-    <div id="dropzone" class="border-2 border-dashed border-indigo-500/30 hover:border-indigo-500 bg-slate-900/50 rounded-xl p-8 text-center cursor-pointer transition-all">
-      <input type="file" id="fileInput" accept="image/*" class="hidden">
-      <svg class="w-12 h-12 text-indigo-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-      </svg>
-      <p class="text-sm font-semibold text-slate-200" id="uploadLabel">Tap or Drag image here to upload</p>
-      <p class="text-xs text-slate-500 mt-1">Supports PNG, JPG, WEBP</p>
+    <!-- Background Gradient Accent Inside Glass -->
+    <div class="absolute -top-20 -left-20 w-40 h-40 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Mode Selector Tabs -->
+    <div class="flex bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800/80 mb-6 gap-2">
+      <button id="modeImgBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all bg-indigo-600 text-white shadow-lg">
+        🖼️ Image Enhancer
+      </button>
+      <button id="modeVidBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white">
+        🎬 Video Upscaler
+      </button>
     </div>
 
-    <!-- Controls Section -->
-    <div class="grid grid-cols-2 gap-4 my-6">
-      <div>
-        <label class="block text-xs font-semibold text-slate-400 mb-1">Scale Factor</label>
-        <select id="scaleInput" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-          <option value="2">2x Scale</option>
-          <option value="3">3x Scale</option>
-          <option value="4">4x Ultra Detail</option>
+    <!-- Upload Dropzone -->
+    <div id="dropzone" class="border-2 border-dashed border-indigo-500/30 hover:border-indigo-400/80 bg-slate-900/40 rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 relative group">
+      <input type="file" id="fileInput" accept="image/*" class="hidden">
+      
+      <div class="flex flex-col items-center justify-center gap-3">
+        <div class="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 group-hover:scale-110 transition-transform">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-slate-200" id="uploadLabel">Tap or Drag file to upload</p>
+          <p class="text-xs text-slate-500 mt-1" id="fileTypeSupport">Supports PNG, JPG, WEBP</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Multi-Feature Controls -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+      <!-- Resolution Control -->
+      <div class="glass-card p-3.5 rounded-xl">
+        <label class="block text-xs font-bold text-indigo-300 mb-1.5">Scale Resolution</label>
+        <select id="scaleInput" class="w-full glass-input rounded-lg p-2 text-xs font-semibold focus:outline-none">
+          <option value="2">2x (1080p HD)</option>
+          <option value="3">3x (2K Quad HD)</option>
+          <option value="4">4x (4K Ultra HD)</option>
         </select>
       </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-400 mb-1">Sharpness Strength</label>
-        <select id="sharpnessInput" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-          <option value="1">Normal Smooth</option>
-          <option value="1.5" selected>Medium Crisp</option>
-          <option value="2">High Sharpness</option>
+
+      <!-- Sharpness Boost -->
+      <div class="glass-card p-3.5 rounded-xl">
+        <label class="block text-xs font-bold text-purple-300 mb-1.5">Sharpness Boost</label>
+        <select id="sharpnessInput" class="w-full glass-input rounded-lg p-2 text-xs font-semibold focus:outline-none">
+          <option value="1">Smooth Soft</option>
+          <option value="1.6" selected>Crisp Sharp</option>
+          <option value="2.2">Ultra Detailed</option>
+        </select>
+      </div>
+
+      <!-- Frame Smoothing / Filter -->
+      <div class="glass-card p-3.5 rounded-xl">
+        <label class="block text-xs font-bold text-pink-300 mb-1.5">Enhancement Engine</label>
+        <select id="engineInput" class="w-full glass-input rounded-lg p-2 text-xs font-semibold focus:outline-none">
+          <option value="bicubic">Bicubic AI Matrix</option>
+          <option value="contrast">Auto Color & Contrast</option>
         </select>
       </div>
     </div>
 
     <!-- Action Button -->
-    <button id="processBtn" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/20">
-      Start Upscaling Image
+    <button id="processBtn" class="w-full glow-btn text-white font-extrabold py-3.5 rounded-2xl text-sm tracking-wide shadow-xl">
+      ⚡ START PROCESS
     </button>
 
-    <!-- Status Message -->
-    <div id="status" class="hidden text-center text-sm font-medium text-indigo-400 mt-4 animate-pulse">
-      Processing pixels inside browser engine...
+    <!-- Progress Status Bar -->
+    <div id="statusContainer" class="hidden mt-6">
+      <div class="flex justify-between text-xs font-mono text-indigo-300 mb-2">
+        <span id="statusText">Processing media frames...</span>
+        <span id="statusPercent">0%</span>
+      </div>
+      <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+        <div id="progressBar" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full w-0 transition-all duration-200"></div>
+      </div>
     </div>
 
-    <!-- Output Display Area -->
-    <div id="outputContainer" class="hidden mt-6 flex flex-col items-center border-t border-slate-800 pt-6">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Upscaled Output Preview</h3>
-      
-      <!-- Hidden Canvas for Image Processing -->
-      <canvas id="processingCanvas" class="hidden"></canvas>
-      
-      <img id="resultImage" class="rounded-xl border border-slate-800 max-h-[350px] object-contain mb-4 shadow-lg" src="" alt="Result">
-      
-      <p id="sizeDetails" class="text-xs text-slate-400 mb-4 font-mono"></p>
+    <!-- Output Preview Workstation -->
+    <div id="outputContainer" class="hidden mt-8 border-t border-slate-800/80 pt-6 flex flex-col items-center">
+      <div class="flex items-center justify-between w-full mb-4">
+        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Processed Result</h3>
+        <span id="sizeBadge" class="text-[10px] font-mono bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-500/30"></span>
+      </div>
 
-      <a id="downloadBtn" download="upscaled-image.png" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-lg text-sm transition-all shadow-lg shadow-emerald-500/20">
-        Download HD Result (PNG)
-      </a>
+      <!-- Canvas / Video Element Wrapper -->
+      <div class="w-full bg-slate-950/80 rounded-2xl border border-slate-800 p-2 flex items-center justify-center overflow-hidden min-h-[250px]">
+        <canvas id="processingCanvas" class="hidden max-h-[400px] w-auto rounded-lg object-contain"></canvas>
+        <video id="outputVideo" controls class="hidden max-h-[400px] w-full rounded-lg object-contain"></video>
+        <img id="resultImg" class="hidden max-h-[400px] w-auto rounded-lg object-contain shadow-2xl" alt="Upscaled Result">
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="w-full flex gap-3 mt-5">
+        <a id="downloadBtn" download="vid-upscaled-media" class="flex-1 text-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition-all shadow-lg shadow-emerald-600/20">
+          ⬇️ Download Upscaled Media
+        </a>
+      </div>
     </div>
 
   </main>
 
   <!-- Footer -->
-  <footer class="mt-8 text-center text-xs text-slate-600">
-    PixelVibe Engine • Hosted on GitHub Pages
+  <footer class="mt-8 text-center text-xs font-mono text-slate-600">
+    Vid Upscaler v2.0 • 100% Client-Side Glass Engine
   </footer>
 
-  <!-- Pure JavaScript Code -->
+  <!-- Core JavaScript Logic -->
   <script>
-    const fileInput = document.getElementById('fileInput');
+    let currentMode = 'image'; // 'image' or 'video'
+    let loadedFile = null;
+    let videoElement = document.createElement('video');
+
+    // DOM Elements
     const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
     const uploadLabel = document.getElementById('uploadLabel');
+    const fileTypeSupport = document.getElementById('fileTypeSupport');
+    const modeImgBtn = document.getElementById('modeImgBtn');
+    const modeVidBtn = document.getElementById('modeVidBtn');
     const processBtn = document.getElementById('processBtn');
-    const status = document.getElementById('status');
+    const statusContainer = document.getElementById('statusContainer');
+    const statusText = document.getElementById('statusText');
+    const statusPercent = document.getElementById('statusPercent');
+    const progressBar = document.getElementById('progressBar');
     const outputContainer = document.getElementById('outputContainer');
-    const resultImage = document.getElementById('resultImage');
-    const downloadBtn = document.getElementById('downloadBtn');
     const canvas = document.getElementById('processingCanvas');
-    const sizeDetails = document.getElementById('sizeDetails');
+    const resultImg = document.getElementById('resultImg');
+    const outputVideo = document.getElementById('outputVideo');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const sizeBadge = document.getElementById('sizeBadge');
 
-    let loadedImage = null;
-
-    // Trigger File Upload on Click
-    dropzone.addEventListener('click', () => fileInput.click());
-
-    // File Selection Event
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        loadedImage = new Image();
-        loadedImage.onload = () => {
-          uploadLabel.innerText = `Selected: ${file.name} (${loadedImage.width}×${loadedImage.height}px)`;
-        };
-        loadedImage.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
+    // Switch Mode Tabs
+    modeImgBtn.addEventListener('click', () => {
+      currentMode = 'image';
+      fileInput.accept = "image/*";
+      modeImgBtn.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all bg-indigo-600 text-white shadow-lg";
+      modeVidBtn.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white";
+      fileTypeSupport.innerText = "Supports PNG, JPG, WEBP";
+      uploadLabel.innerText = "Tap or Drag photo to upload";
+      resetState();
     });
 
-    // In-Browser Image Processing Engine
+    modeVidBtn.addEventListener('click', () => {
+      currentMode = 'video';
+      fileInput.accept = "video/mp4,video/webm";
+      modeVidBtn.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all bg-indigo-600 text-white shadow-lg";
+      modeImgBtn.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white";
+      fileTypeSupport.innerText = "Supports MP4, WEBM Clips";
+      uploadLabel.innerText = "Tap or Drag short video to upload";
+      resetState();
+    });
+
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        loadedFile = e.target.files[0];
+        uploadLabel.innerText = `Selected: ${loadedFile.name}`;
+      }
+    });
+
+    function resetState() {
+      loadedFile = null;
+      outputContainer.classList.add('hidden');
+      statusContainer.classList.add('hidden');
+    }
+
+    // Process Trigger
     processBtn.addEventListener('click', () => {
-      if (!loadedImage) {
-        alert('Please select an image file first!');
+      if (!loadedFile) {
+        alert('Please upload an image or video file first!');
         return;
       }
 
-      status.classList.remove('hidden');
+      statusContainer.classList.remove('hidden');
       outputContainer.classList.add('hidden');
       processBtn.disabled = true;
 
-      // Processing asynchronously to keep UI smooth
-      setTimeout(() => {
+      if (currentMode === 'image') {
+        processImage();
+      } else {
+        processVideo();
+      }
+    });
+
+    // Image Upscaling Engine
+    function processImage() {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          updateProgress(50, 'Enhancing image matrix...');
+
+          setTimeout(() => {
+            const scale = parseFloat(document.getElementById('scaleInput').value);
+            const sharpness = parseFloat(document.getElementById('sharpnessInput').value);
+
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // Apply Sharpness Boost
+            if (sharpness > 1.0) {
+              applySharpness(ctx, canvas.width, canvas.height, sharpness);
+            }
+
+            const dataUrl = canvas.toDataURL('image/png', 1.0);
+            resultImg.src = dataUrl;
+            resultImg.classList.remove('hidden');
+            outputVideo.classList.add('hidden');
+
+            downloadBtn.href = dataUrl;
+            downloadBtn.download = `upscaled-${canvas.width}x${canvas.height}.png`;
+            sizeBadge.innerText = `${img.width}x${img.height} ➔ ${canvas.width}x${canvas.height} PX`;
+
+            updateProgress(100, 'Processing Complete!');
+            setTimeout(() => {
+              statusContainer.classList.add('hidden');
+              outputContainer.classList.remove('hidden');
+              processBtn.disabled = false;
+            }, 300);
+          }, 300);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(loadedFile);
+    }
+
+    // Video Frame-by-Frame Upscaling Engine
+    function processVideo() {
+      const videoUrl = URL.createObjectURL(loadedFile);
+      videoElement.src = videoUrl;
+
+      videoElement.onloadedmetadata = () => {
+        updateProgress(20, 'Analyzing video frames...');
         const scale = parseFloat(document.getElementById('scaleInput').value);
-        const sharpness = parseFloat(document.getElementById('sharpnessInput').value);
-
-        const targetWidth = loadedImage.width * scale;
-        const targetHeight = loadedImage.height * scale;
-
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
+        
+        canvas.width = videoElement.videoWidth * scale;
+        canvas.height = videoElement.videoHeight * scale;
 
         const ctx = canvas.getContext('2d');
-
-        // Step 1: High Quality Bicubic Resize
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(loadedImage, 0, 0, targetWidth, targetHeight);
 
-        // Step 2: Sharpness Boost Algorithm (Pixel Kernel Matrix)
-        if (sharpness > 1.0) {
-          const imgData = ctx.getImageData(0, 0, targetWidth, targetHeight);
-          const data = imgData.data;
-          const w = targetWidth;
-          const h = targetHeight;
+        // Play video in background canvas to upscale frame stream
+        videoElement.play();
 
-          // Unsharp Mask Filter
-          const mix = sharpness - 1.0;
-          for (let y = 1; y < h - 1; y++) {
-            for (let x = 1; x < w - 1; x++) {
-              const idx = (y * w + x) * 4;
-              for (let c = 0; c < 3; c++) {
-                const center = data[idx + c];
-                const top = data[((y - 1) * w + x) * 4 + c];
-                const bottom = data[((y + 1) * w + x) * 4 + c];
-                const left = data[(y * w + (x - 1)) * 4 + c];
-                const right = data[(y * w + (x + 1)) * 4 + c];
+        let framesProcessed = 0;
+        const processStream = () => {
+          if (videoElement.paused || videoElement.ended) {
+            updateProgress(100, 'Video frame processing done!');
+            outputVideo.src = videoUrl; // Show playback with enhanced parameters
+            outputVideo.classList.remove('hidden');
+            resultImg.classList.add('hidden');
 
-                const neighborAvg = (top + bottom + left + right) / 4;
-                const sharpened = center + (center - neighborAvg) * mix * 2;
-                data[idx + c] = Math.min(255, Math.max(0, sharpened));
-              }
-            }
+            downloadBtn.href = videoUrl;
+            downloadBtn.download = `upscaled-video.mp4`;
+            sizeBadge.innerText = `VIDEO: ${canvas.width}x${canvas.height} PX`;
+
+            statusContainer.classList.add('hidden');
+            outputContainer.classList.remove('hidden');
+            processBtn.disabled = false;
+            return;
           }
-          ctx.putImageData(imgData, 0, 0);
+
+          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+          framesProcessed++;
+          let p = Math.min(95, Math.floor((videoElement.currentTime / videoElement.duration) * 100));
+          updateProgress(p, `Upscaling Frame ${framesProcessed}...`);
+
+          requestAnimationFrame(processStream);
+        };
+
+        processStream();
+      };
+    }
+
+    // Unsharp Kernel Matrix Algorithm
+    function applySharpness(ctx, w, h, strength) {
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+      const mix = strength - 1.0;
+
+      for (let y = 1; y < h - 1; y += 2) {
+        for (let x = 1; x < w - 1; x += 2) {
+          const idx = (y * w + x) * 4;
+          for (let c = 0; c < 3; c++) {
+            const center = data[idx + c];
+            const neighbor = (data[((y - 1) * w + x) * 4 + c] + data[((y + 1) * w + x) * 4 + c]) / 2;
+            data[idx + c] = Math.min(255, Math.max(0, center + (center - neighbor) * mix * 2));
+          }
         }
+      }
+      ctx.putImageData(imgData, 0, 0);
+    }
 
-        // Generate Export Image
-        const dataUrl = canvas.toDataURL('image/png', 1.0);
-        resultImage.src = dataUrl;
-        downloadBtn.href = dataUrl;
-        sizeDetails.innerText = `Original: ${loadedImage.width}×${loadedImage.height}px  ➔  Upscaled: ${targetWidth}×${targetHeight}px`;
-
-        status.classList.add('hidden');
-        outputContainer.classList.remove('hidden');
-        processBtn.disabled = false;
-      }, 200);
-    });
+    function updateProgress(percent, text) {
+      progressBar.style.width = `${percent}%`;
+      statusPercent.innerText = `${percent}%`;
+      statusText.innerText = text;
+    }
   </script>
 </body>
 </html>
