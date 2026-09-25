@@ -6,7 +6,7 @@
   <title>Vid Upscaler - AI Media & Video Enhancer</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts & Icons -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
@@ -54,7 +54,6 @@
       transform: translateY(-2px);
     }
 
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -73,7 +72,7 @@
   <header class="text-center mt-4 mb-8 max-w-2xl w-full">
     <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 uppercase tracking-widest shadow-inner mb-4">
       <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
-      Next-Gen Media Engine
+      Real-Time Canvas Recorder Engine
     </div>
     <h1 class="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-white via-indigo-100 to-purple-400 bg-clip-text text-transparent drop-shadow-sm">
       Vid Upscaler
@@ -86,7 +85,6 @@
   <!-- Main Glass Console -->
   <main class="w-full max-w-3xl glass-panel rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
     
-    <!-- Background Gradient Accent Inside Glass -->
     <div class="absolute -top-20 -left-20 w-40 h-40 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -115,34 +113,31 @@
       </div>
     </div>
 
-    <!-- Multi-Feature Controls -->
+    <!-- Controls -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
-      <!-- Resolution Control -->
       <div class="glass-card p-3.5 rounded-xl">
         <label class="block text-xs font-bold text-indigo-300 mb-1.5">Scale Resolution</label>
         <select id="scaleInput" class="w-full glass-input rounded-lg p-2 text-xs font-semibold focus:outline-none">
-          <option value="2">2x (1080p HD)</option>
-          <option value="3">3x (2K Quad HD)</option>
-          <option value="4">4x (4K Ultra HD)</option>
+          <option value="1.5">1.5x Boost</option>
+          <option value="2" selected>2x (1080p HD)</option>
+          <option value="3">3x (Quad HD)</option>
         </select>
       </div>
 
-      <!-- Sharpness Boost -->
       <div class="glass-card p-3.5 rounded-xl">
         <label class="block text-xs font-bold text-purple-300 mb-1.5">Sharpness Boost</label>
         <select id="sharpnessInput" class="w-full glass-input rounded-lg p-2 text-xs font-semibold focus:outline-none">
           <option value="1">Smooth Soft</option>
-          <option value="1.6" selected>Crisp Sharp</option>
-          <option value="2.2">Ultra Detailed</option>
+          <option value="1.5" selected>Crisp Sharp</option>
+          <option value="2.0">Ultra Detailed</option>
         </select>
       </div>
 
-      <!-- Frame Smoothing / Filter -->
       <div class="glass-card p-3.5 rounded-xl">
-        <label class="block text-xs font-bold text-pink-300 mb-1.5">Enhancement Engine</label>
-        <select id="engineInput" class="w-full glass-input rounded-lg p-2 text-xs font-semibold focus:outline-none">
-          <option value="bicubic">Bicubic AI Matrix</option>
-          <option value="contrast">Auto Color & Contrast</option>
+        <label class="block text-xs font-bold text-pink-300 mb-1.5">Frame Rendering</label>
+        <select id="fpsInput" class="w-full glass-input rounded-lg p-2 text-xs font-semibold focus:outline-none">
+          <option value="30">30 FPS Standard</option>
+          <option value="60">60 FPS Smooth Stream</option>
         </select>
       </div>
     </div>
@@ -170,16 +165,14 @@
         <span id="sizeBadge" class="text-[10px] font-mono bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-500/30"></span>
       </div>
 
-      <!-- Canvas / Video Element Wrapper -->
       <div class="w-full bg-slate-950/80 rounded-2xl border border-slate-800 p-2 flex items-center justify-center overflow-hidden min-h-[250px]">
-        <canvas id="processingCanvas" class="hidden max-h-[400px] w-auto rounded-lg object-contain"></canvas>
+        <canvas id="processingCanvas" class="hidden"></canvas>
         <video id="outputVideo" controls class="hidden max-h-[400px] w-full rounded-lg object-contain"></video>
         <img id="resultImg" class="hidden max-h-[400px] w-auto rounded-lg object-contain shadow-2xl" alt="Upscaled Result">
       </div>
 
-      <!-- Action Buttons -->
       <div class="w-full flex gap-3 mt-5">
-        <a id="downloadBtn" download="vid-upscaled-media" class="flex-1 text-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition-all shadow-lg shadow-emerald-600/20">
+        <a id="downloadBtn" download="upscaled-media" class="flex-1 text-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition-all shadow-lg shadow-emerald-600/20">
           ⬇️ Download Upscaled Media
         </a>
       </div>
@@ -187,18 +180,14 @@
 
   </main>
 
-  <!-- Footer -->
   <footer class="mt-8 text-center text-xs font-mono text-slate-600">
-    Vid Upscaler v2.0 • 100% Client-Side Glass Engine
+    Vid Upscaler v2.5 • 100% Client-Side Glass Engine
   </footer>
 
-  <!-- Core JavaScript Logic -->
   <script>
-    let currentMode = 'image'; // 'image' or 'video'
+    let currentMode = 'image';
     let loadedFile = null;
-    let videoElement = document.createElement('video');
 
-    // DOM Elements
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('fileInput');
     const uploadLabel = document.getElementById('uploadLabel');
@@ -217,7 +206,6 @@
     const downloadBtn = document.getElementById('downloadBtn');
     const sizeBadge = document.getElementById('sizeBadge');
 
-    // Switch Mode Tabs
     modeImgBtn.addEventListener('click', () => {
       currentMode = 'image';
       fileInput.accept = "image/*";
@@ -253,7 +241,6 @@
       statusContainer.classList.add('hidden');
     }
 
-    // Process Trigger
     processBtn.addEventListener('click', () => {
       if (!loadedFile) {
         alert('Please upload an image or video file first!');
@@ -267,11 +254,11 @@
       if (currentMode === 'image') {
         processImage();
       } else {
-        processVideo();
+        processVideoWithRecorder();
       }
     });
 
-    // Image Upscaling Engine
+    // Image Upscaler Engine
     function processImage() {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -291,7 +278,6 @@
             ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-            // Apply Sharpness Boost
             if (sharpness > 1.0) {
               applySharpness(ctx, canvas.width, canvas.height, sharpness);
             }
@@ -318,56 +304,84 @@
       reader.readAsDataURL(loadedFile);
     }
 
-    // Video Frame-by-Frame Upscaling Engine
-    function processVideo() {
-      const videoUrl = URL.createObjectURL(loadedFile);
-      videoElement.src = videoUrl;
+    // Video Engine (Real-time Canvas Recording & Processing)
+    function processVideoWithRecorder() {
+      const tempVideo = document.createElement('video');
+      tempVideo.src = URL.createObjectURL(loadedFile);
+      tempVideo.muted = true;
+      tempVideo.playsInline = true;
 
-      videoElement.onloadedmetadata = () => {
-        updateProgress(20, 'Analyzing video frames...');
+      tempVideo.onloadedmetadata = () => {
         const scale = parseFloat(document.getElementById('scaleInput').value);
-        
-        canvas.width = videoElement.videoWidth * scale;
-        canvas.height = videoElement.videoHeight * scale;
+        const sharpness = parseFloat(document.getElementById('sharpnessInput').value);
+        const targetFps = parseInt(document.getElementById('fpsInput').value);
 
-        const ctx = canvas.getContext('2d');
+        canvas.width = Math.round(tempVideo.videoWidth * scale);
+        canvas.height = Math.round(tempVideo.videoHeight * scale);
+
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        // Play video in background canvas to upscale frame stream
-        videoElement.play();
+        // Capture Canvas Stream into MediaRecorder
+        const stream = canvas.captureStream(targetFps);
+        let recorderOptions = { mimeType: 'video/webm;codecs=vp9' };
+        if (!MediaRecorder.isTypeSupported(recorderOptions.mimeType)) {
+          recorderOptions = { mimeType: 'video/webm' };
+        }
 
-        let framesProcessed = 0;
-        const processStream = () => {
-          if (videoElement.paused || videoElement.ended) {
-            updateProgress(100, 'Video frame processing done!');
-            outputVideo.src = videoUrl; // Show playback with enhanced parameters
-            outputVideo.classList.remove('hidden');
-            resultImg.classList.add('hidden');
+        const mediaRecorder = new MediaRecorder(stream, recorderOptions);
+        const recordedChunks = [];
 
-            downloadBtn.href = videoUrl;
-            downloadBtn.download = `upscaled-video.mp4`;
-            sizeBadge.innerText = `VIDEO: ${canvas.width}x${canvas.height} PX`;
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
 
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          const upscaledVideoUrl = URL.createObjectURL(blob);
+
+          outputVideo.src = upscaledVideoUrl;
+          outputVideo.classList.remove('hidden');
+          resultImg.classList.add('hidden');
+
+          downloadBtn.href = upscaledVideoUrl;
+          downloadBtn.download = `upscaled-video-${canvas.width}x${canvas.height}.webm`;
+          sizeBadge.innerText = `${tempVideo.videoWidth}x${tempVideo.videoHeight} ➔ ${canvas.width}x${canvas.height} PX`;
+
+          updateProgress(100, 'Video Render Complete!');
+          setTimeout(() => {
             statusContainer.classList.add('hidden');
             outputContainer.classList.remove('hidden');
             processBtn.disabled = false;
+          }, 300);
+        };
+
+        tempVideo.play();
+        mediaRecorder.start();
+
+        function renderFrame() {
+          if (tempVideo.paused || tempVideo.ended) {
+            mediaRecorder.stop();
             return;
           }
 
-          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-          framesProcessed++;
-          let p = Math.min(95, Math.floor((videoElement.currentTime / videoElement.duration) * 100));
-          updateProgress(p, `Upscaling Frame ${framesProcessed}...`);
+          ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
 
-          requestAnimationFrame(processStream);
-        };
+          if (sharpness > 1.0) {
+            applySharpness(ctx, canvas.width, canvas.height, sharpness);
+          }
 
-        processStream();
+          let progress = Math.min(98, Math.floor((tempVideo.currentTime / tempVideo.duration) * 100));
+          updateProgress(progress, `Rendering & Upscaling Frame (${progress}%)...`);
+
+          requestAnimationFrame(renderFrame);
+        }
+
+        renderFrame();
       };
     }
 
-    // Unsharp Kernel Matrix Algorithm
     function applySharpness(ctx, w, h, strength) {
       const imgData = ctx.getImageData(0, 0, w, h);
       const data = imgData.data;
